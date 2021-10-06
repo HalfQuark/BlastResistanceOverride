@@ -1,10 +1,12 @@
 package me.halfquark.blastresistanceoverride;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import net.minecraft.server.v1_12_R1.Block;
 
 public class BlastResistanceOverride extends JavaPlugin{
 	
@@ -19,11 +21,29 @@ public class BlastResistanceOverride extends JavaPlugin{
 			return;
 		}
 		for(String key : getConfig().getConfigurationSection("OverrideValues").getKeys(false)) {
-		    BlockOverride bo = new BlockOverride(Block.getById(Integer.parseInt(key)));
-		    bo.set("durability", 5.0f * Float.parseFloat(getConfig().getString("OverrideValues." + key)));
-		    overrideSet.add(bo);
+			for(Material mat : getBlocks(key)) {
+				BlockOverride bo = new BlockOverride(mat);
+				bo.set("durability", (short) (5 * getConfig().getInt("OverrideValues." + key)));
+				overrideSet.add(bo);
+			}
 		}
 	}
+	
+    public static ArrayList<Material> getBlocks(String name){
+        ArrayList<Material> blocks = new ArrayList<>();
+        if(name.startsWith("#")){
+            Iterable<Tag<Material>> tags = Bukkit.getTags(Tag.REGISTRY_BLOCKS, Material.class);
+            for(Tag<Material> tag : tags){
+                if(tag.getKey().toString().equals(name.substring(1))){
+                    blocks.addAll(tag.getValues());
+                    break;
+                }
+            }
+        }else{
+            blocks.add(Material.matchMaterial(name));
+        }
+        return blocks;
+    }
 	
 	@Override
 	public void onDisable() {

@@ -6,10 +6,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.reflect.FieldUtils;
+import org.bukkit.Material;
 
 import com.google.common.collect.ImmutableMap;
-
-import net.minecraft.server.v1_12_R1.Block;
 
 /**
  * Overrides particular values on blocks,
@@ -19,31 +18,31 @@ import net.minecraft.server.v1_12_R1.Block;
 public class BlockOverride {
     
     // The block we will override
-    private Block block;
+    private Material block;
     
     // Old values
     private Map<String, Object> oldValues = new HashMap<String, Object>();
     private Map<String, Field> fieldCache = new HashMap<String, Field>();
     
-    public BlockOverride(Block block) {
-        this.block = block;
+    public BlockOverride(Material material) {
+        this.block = material;
     }
     
     /**
      * Update the given field with a new value.
      * @param fieldName - name of field.
-     * @param value - new value.
+     * @param object - new value.
      * @throws IllegalArgumentException If the field name is NULL or the field doesn't exist.
      * @throws RuntimeException If we don't have security clearance.
      */
-    public void set(String fieldName, Object value) {
+    public void set(String fieldName, Object object) {
     
         try {
             // Write the value directly
         	if (!oldValues.containsKey(fieldName)) {
             	oldValues.put(fieldName, FieldUtils.readField(getField(fieldName), block));
             }
-            FieldUtils.writeField(getField(fieldName), block, value);
+            FieldUtils.writeField(getField(fieldName), block, object);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Unable to read field.", e);
         }
@@ -94,7 +93,7 @@ public class BlockOverride {
     public void revertAll() {
         // Reset what we have
         for (String stored : oldValues.keySet()) {
-            set(stored, getVanilla(stored));
+            set(stored, (short) getVanilla(stored));
         }
         
         // Remove list
@@ -108,7 +107,8 @@ public class BlockOverride {
         oldValues.clear();
     }
     
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     protected void finalize() throws Throwable {
         // We definitely should revert when we're done
         if (oldValues != null && oldValues.size() > 0) {
