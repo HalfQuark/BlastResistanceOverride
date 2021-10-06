@@ -23,6 +23,7 @@ public class BlastResistanceOverride extends JavaPlugin{
 		}
 		for(String key : getConfig().getConfigurationSection("OverrideValues").getKeys(false)) {
 			for(Material mat : getBlocks(key)) {
+				BlockOverride bo = new BlockOverride(mat);
 				bo.set("durability", (short) (5 * getConfig().getInt("OverrideValues." + key)));
 				overrideSet.add(bo);
 			}
