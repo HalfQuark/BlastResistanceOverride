@@ -7,6 +7,9 @@ import java.util.Map;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
+
+import net.minecraft.server.v1_16_R3.Block;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -18,14 +21,14 @@ import com.google.common.collect.ImmutableMap;
 public class BlockOverride {
     
     // The block we will override
-    private Material block;
+    private Block block;
     
     // Old values
     private Map<String, Object> oldValues = new HashMap<String, Object>();
     private Map<String, Field> fieldCache = new HashMap<String, Field>();
     
     public BlockOverride(Material material) {
-        this.block = material;
+        this.block = CraftMagicNumbers.getBlock(material);
     }
     
     /**
