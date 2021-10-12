@@ -1,2 +1,2 @@
 # BlastResistanceOverride
-1.12.2 Spigot Plugin
+Compatible versions: 1.16.5
