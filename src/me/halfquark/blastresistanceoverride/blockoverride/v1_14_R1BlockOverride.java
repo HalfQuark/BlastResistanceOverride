@@ -5,9 +5,9 @@ import net.minecraft.server.v1_14_R1.Block;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,9 +24,10 @@ public class v1_14_R1BlockOverride extends BlockOverride {
     // Old values
     private Map<String, Object> oldValues = new HashMap<String, Object>();
     private Map<String, Field> fieldCache = new HashMap<String, Field>();
+    private Class<?> CraftMagicNumbers = Class.forName("org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers");
 
-    public v1_14_R1BlockOverride(Material material) {
-        this.block = CraftMagicNumbers.getBlock(material);
+    public v1_14_R1BlockOverride(Material material) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        this.block = (Block) CraftMagicNumbers.getMethod("getBlock", Material.class).invoke(null, material);
     }
 
     public boolean isValid(){return this.block != null;}
