@@ -37,6 +37,10 @@ public class BlastResistanceOverride extends JavaPlugin{
         try {
             for (Material mat : overrideDur.getMap().keySet()) {
                 BlockOverride bo = (BlockOverride) BOClass.getDeclaredConstructor(Material.class).newInstance(mat);
+                if (!bo.isValid()){
+                    getLogger().warning("Block \"" + mat.name() + "\" is not applicable");
+                    continue;
+                }
                 bo.set("durability", overrideDur.getMap().get(mat));
                 overrideSet.add(bo);
             }

@@ -50,10 +50,16 @@ public class ResistFile {
             for(Tag<Material> tag : tags){
                 if(tag.getKey().toString().equalsIgnoreCase(name)){
                     blocks.addAll(tag.getValues());
-                    break;
+                    return blocks;
                 }
             }
+            Bukkit.getLogger().warning("Could not find tag \"" + name + "\"");
         }else{
+            Material mat = Material.matchMaterial(name);
+            if(mat == null) {
+                Bukkit.getLogger().warning("Could not find block \"" + name + "\"");
+                return blocks;
+            }
             blocks.add(Material.matchMaterial(name));
         }
         return blocks;
