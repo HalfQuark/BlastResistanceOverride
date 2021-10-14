@@ -1,7 +1,6 @@
 package me.halfquark.blastresistanceoverride;
 
 import com.google.common.collect.ImmutableMap;
-import me.halfquark.blastresistanceoverride.BlastResistanceOverride;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Material;
