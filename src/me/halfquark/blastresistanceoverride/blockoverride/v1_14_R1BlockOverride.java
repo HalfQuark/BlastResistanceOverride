@@ -1,7 +1,6 @@
 package me.halfquark.blastresistanceoverride.blockoverride;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.server.v1_14_R1.Block;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Material;
@@ -18,16 +17,18 @@ import java.util.Map;
  */
 public class v1_14_R1BlockOverride extends BlockOverride {
 
+    // Reflexion classes
+    private final Class<?> CraftMagicNumbers = Class.forName("org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers");
+    //private final Class<?> NMSBlock = Class.forName("net.minecraft.server.v1_14_R1.Block");
     // The block we will override
-    private Block block;
+    private Object block;
 
     // Old values
     private Map<String, Object> oldValues = new HashMap<String, Object>();
     private Map<String, Field> fieldCache = new HashMap<String, Field>();
-    private Class<?> CraftMagicNumbers = Class.forName("org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers");
 
     public v1_14_R1BlockOverride(Material material) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        this.block = (Block) CraftMagicNumbers.getMethod("getBlock", Material.class).invoke(null, material);
+        block = CraftMagicNumbers.getMethod("getBlock", Material.class).invoke(null, material);
     }
 
     public boolean isValid(){return this.block != null;}
