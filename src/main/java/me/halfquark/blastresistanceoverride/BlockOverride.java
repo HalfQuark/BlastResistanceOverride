@@ -1,7 +1,7 @@
-package me.halfquark.blastresistanceoverride.blockoverride;
+package me.halfquark.blastresistanceoverride;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.server.v1_16_R3.Block;
+import me.halfquark.blastresistanceoverride.BlastResistanceOverride;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Material;
@@ -16,18 +16,19 @@ import java.util.Map;
  *
  * @author Kristian
  */
-public class v1_16_R3BlockOverride extends BlockOverride {
+public class BlockOverride {
 
+    // Reflexion classes
+    private Class<?> CraftMagicNumbers = Class.forName("org.bukkit.craftbukkit." + BlastResistanceOverride.getVersion() + ".util.CraftMagicNumbers");
     // The block we will override
-    private Block block;
+    private Object block;
 
     // Old values
     private Map<String, Object> oldValues = new HashMap<String, Object>();
     private Map<String, Field> fieldCache = new HashMap<String, Field>();
-    private Class<?> CraftMagicNumbers = Class.forName("org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers");
 
-    public v1_16_R3BlockOverride(Material material) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        this.block = (Block) CraftMagicNumbers.getMethod("getBlock", Material.class).invoke(null, material);
+    public BlockOverride(Material material) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        this.block = CraftMagicNumbers.getMethod("getBlock", Material.class).invoke(null, material);
     }
 
     public boolean isValid(){return this.block != null;}
@@ -96,7 +97,7 @@ public class v1_16_R3BlockOverride extends BlockOverride {
     public void revertAll() {
         // Reset what we have
         for (String stored : oldValues.keySet()) {
-            set(stored, (short) getVanilla(stored));
+            set(stored, getVanilla(stored));
         }
 
         // Remove list
