@@ -11,12 +11,14 @@ public class BlastResistanceOverride extends JavaPlugin{
     private HashSet<BlockOverride> overrideSet = new HashSet<BlockOverride>();
     private ResistFile overrideDur;
     private static String version;
+    private String fieldName;
 
     @Override
     public void onEnable(){
 
         String packageName = this.getServer().getClass().getPackage().getName();
         version = packageName.substring(packageName.lastIndexOf('.') + 1);
+        fieldName = FieldMappings.getFieldName();
 
         saveResource("overrides.resist");
         saveResource("defaults.resist");
@@ -28,7 +30,7 @@ public class BlastResistanceOverride extends JavaPlugin{
                     getLogger().warning("Block \"" + mat.name() + "\" is not applicable");
                     continue;
                 }
-                bo.set("durability", overrideDur.getMap().get(mat));
+                bo.set(fieldName, overrideDur.getMap().get(mat));
                 overrideSet.add(bo);
             }
         }catch(Exception e){
@@ -65,7 +67,7 @@ public class BlastResistanceOverride extends JavaPlugin{
                 BlockOverride bo = new BlockOverride(mat);
                 if (!bo.isValid())
                     continue;
-                Float d = (Float) bo.get("durability");
+                Float d = (Float) bo.get(fieldName);
                 bw.write(mat.name() + "=" + d);
                 bw.newLine();
             }
